@@ -1,20 +1,18 @@
-import Dependencies._
-
-ThisBuild / scalaVersion     := "2.12.13"
-ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "com.example"
+ThisBuild / scalaVersion := "2.12.13"
+ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / organization := "com.example"
 ThisBuild / organizationName := "example"
 
 lazy val root = (project in file("."))
   .settings(
     name := "HackAssembler",
     scalacOptions ++= Seq(
-        "-deprecation",
-        "-feature",
-        "-unchecked",
-        "-Xlint"
+      "-deprecation",
+      "-feature",
+      "-unchecked",
+      "-Xlint"
     ),
-    libraryDependencies += scalaTest % Test
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % "test"
   )
 
 // Uncomment the following for publishing to Sonatype.
