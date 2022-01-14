@@ -24,7 +24,7 @@ case object RParen extends TokenType
 // "@"
 case object At extends TokenType
 // "[a-zA-Z0-9]+
-case class Symbol(s: String) extends  TokenType
+case class Symbol(s: String) extends TokenType
 // [0-9]+
 case class Number(i: Int) extends TokenType
 
@@ -74,8 +74,6 @@ case object Jle extends TokenType
 // "jmp"
 case object Jmp extends TokenType
 
-
-
 /* 定義済みシンボル */
 case object Sp extends TokenType
 case object Lcl extends TokenType
@@ -100,7 +98,6 @@ case object R14 extends TokenType
 case object R15 extends TokenType
 case object Screen extends TokenType
 case object KeyBoard extends TokenType
-
 
 case object UartRx1 extends TokenType // Player1
 case object UartRx2 extends TokenType // Player2
