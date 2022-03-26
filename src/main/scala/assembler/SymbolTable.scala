@@ -8,7 +8,7 @@ class SymbolTable(psr: Parser) {
     while (!psr.isEnd()) {
       val cmd = psr.parseOne()
       cmd.ty match {
-        case ACmdLabel(Symbol(label)) => {
+        case Label(label) => {
           table = table.updated(label, counter)
         }
         case _ => {
