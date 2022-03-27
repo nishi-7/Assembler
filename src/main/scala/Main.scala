@@ -9,7 +9,7 @@ object Main {
               |(xxx)
               |@1234
               |@label
-              |M=1
+              |M=-1
               |0;JMP
               |@xxx
               |D;JEQ
@@ -29,8 +29,8 @@ object Main {
         println(s"${label} -> ${inst}")
       }
 
-      val codeWriter = new CodeWriter(asms, table)
-      val insts = codeWriter.codeGen()
+      val cwr = new CodeWriter(asms, table)
+      val insts = cwr.codeGen()
 
       for (inst <- insts) {
         println(inst)

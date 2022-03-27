@@ -3,8 +3,8 @@ package assembler
 import assembler.Util._
 import java.io.PrintWriter
 
-class CodeWriter(asms: Vector[Asm], symbolTable: Map[String, Int]) {
-  def codeGen(): Vector[String] = {
+class CodeWriter(asms: Seq[Asm], symbolTable: Map[String, Int]) {
+  def codeGen(): Seq[String] = {
     asms
       .map(asm => translate(asm))
   }
@@ -15,7 +15,7 @@ class CodeWriter(asms: Vector[Asm], symbolTable: Map[String, Int]) {
       case ACmdLabel(label)       => binaryGenACmd(label, asm.loc)
       case CCmd(dest, comp, jump) => binaryGenCCmd(dest, comp, jump, asm.loc)
       case Label(label)           => throwCodeGenError("label", label, asm.loc)
-      case tt                     => throwCodeGenError("xx", "", asm.loc)
+      case tt => throwCodeGenError("xx", tt.toString(), asm.loc)
     }
   }
 
@@ -77,7 +77,7 @@ class CodeWriter(asms: Vector[Asm], symbolTable: Map[String, Int]) {
     comp match {
       case Number(0) => "0101010"
       case Number(1) => "0111111"
-      case Minus     => "0111010"
+      case MinusOne  => "0111010"
       case D         => "0001100"
       case A         => "0110000"
       case BangD     => "0001101"
