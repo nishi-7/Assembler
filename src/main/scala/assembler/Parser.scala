@@ -6,11 +6,15 @@ class Parser(lex: Lexer) {
   private var curToken = lex.nextToken()
   private var nxtToken = lex.nextToken()
 
-  def parseOne() = {
+  def parseOne(): Asm = {
     curToken.ty match {
       case LParen => this.parseLabel()
       case At     => this.parseACmd()
-      case _      => this.parseCCmd()
+      case NewLine => {
+        this.nextToken()
+        this.parseOne()
+      }
+      case _ => this.parseCCmd()
     }
   }
 

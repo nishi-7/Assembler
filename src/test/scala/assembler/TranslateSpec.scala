@@ -34,7 +34,7 @@ class TranslateSpec extends FlatSpec with Matchers {
     val cwr = new CodeWriter(asms, table)
     val insts = cwr.codeGen().iterator
 
-    insts.next() shouldBe ("1110101010001000")
+    insts.next() shouldBe ("111" + "0101010" + "001" + "000")
   }
   it should "translate M=1" in {
     val code =
@@ -48,7 +48,7 @@ class TranslateSpec extends FlatSpec with Matchers {
     val cwr = new CodeWriter(asms, table)
     val insts = cwr.codeGen().iterator
 
-    insts.next() shouldBe ("1110111111001000")
+    insts.next() shouldBe ("111" + "0111111" + "001" + "000")
   }
   it should "translate M=-1" in {
     val code =

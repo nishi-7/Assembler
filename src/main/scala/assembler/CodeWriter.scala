@@ -1,7 +1,6 @@
 package assembler
 
 import assembler.Util._
-import java.io.PrintWriter
 
 class CodeWriter(asms: Seq[Asm], symbolTable: Map[String, Int]) {
   def codeGen(): Seq[String] = {
