@@ -5,7 +5,7 @@ ThisBuild / organizationName := "example"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "HackAssembler",
+    name := "Assembler",
     scalacOptions ++= Seq(
       "-deprecation",
       "-feature",
