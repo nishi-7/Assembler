@@ -52,6 +52,11 @@ object Main {
                 reader.close()
                 writer.close()
               }
+
+              println(s"Successfully generate to hack binary:")
+              println(
+                s"line: ${insts.length} loc, size: ${insts.length * 2} bytes"
+              )
             }) match {
               case Success(value) =>
               case Failure(e: HackError) =>
