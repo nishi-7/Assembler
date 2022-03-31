@@ -31,7 +31,9 @@ object CodeWriter {
   )
 }
 
-class CodeWriter(asms: Seq[Asm], symbolTable: Map[String, Int]) {
+class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
+  private var countAddr = 16
+
   def codeGen(): Seq[String] = {
     asms
       .map(asm => translate(asm))
@@ -53,12 +55,14 @@ class CodeWriter(asms: Seq[Asm], symbolTable: Map[String, Int]) {
         String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
       case Symbol(s) => {
         symbolTable.get(s) match {
-          case None =>
-            throwCodeGenError(
-              s"to find a label (${s}) in symboltable",
-              addr.toString(),
-              loc
-            )
+          case None => {
+            val inst = String
+              .format("%16s", Integer.toBinaryString(countAddr))
+              .replace(' ', '0')
+            this.symbolTable = symbolTable.updated(s, countAddr)
+            countAddr = countAddr + 1
+            inst
+          }
           case Some(value) =>
             String
               .format("%16s", Integer.toBinaryString(value))
