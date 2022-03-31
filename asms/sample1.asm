@@ -1,14 +1,165 @@
-(q)
-(sum)
-(j)
-@sum
-D=M
-@12
-@SP
-D=D+A
-@j
-D=D-M
-@q
-M=D
-@SP
-@R4
+	@256
+	D=A
+	@SP
+	M=D
+	@RETURN0
+	D=A
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@LCL
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@ARG
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@THIS
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@THAT
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@SP
+	D=M
+	@LCL
+	M=D
+	@5
+	D=D-A
+	@ARG
+	M=D
+	@Sys.init
+	0;JMP
+(RETURN0)
+	@0
+	D=A
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@0
+	D=A
+	@LCL
+	M=D+M
+	@SP
+	AM=M-1
+	D=M
+	@LCL
+	A=M
+	M=D
+	@0
+	D=A
+	@LCL
+	M=M-D
+($LOOP_START)
+	@0
+	D=A
+	@ARG
+	A=D+M
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@0
+	D=A
+	@LCL
+	A=D+M
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@SP
+	AM=M-1
+	D=M
+	@SP
+	A=M-1
+	M=D+M
+	@0
+	D=A
+	@LCL
+	M=D+M
+	@SP
+	AM=M-1
+	D=M
+	@LCL
+	A=M
+	M=D
+	@0
+	D=A
+	@LCL
+	M=M-D
+	@0
+	D=A
+	@ARG
+	A=D+M
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@1
+	D=A
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@SP
+	AM=M-1
+	D=M
+	@SP
+	A=M-1
+	M=M-D
+	@0
+	D=A
+	@ARG
+	M=D+M
+	@SP
+	AM=M-1
+	D=M
+	@ARG
+	A=M
+	M=D
+	@0
+	D=A
+	@ARG
+	M=M-D
+	@0
+	D=A
+	@ARG
+	A=D+M
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+	@SP
+	AM=M-1
+	D=M
+	@$LOOP_START
+	D;JNE
+	@0
+	D=A
+	@LCL
+	A=D+M
+	D=M
+	@SP
+	AM=M+1
+	A=A-1
+	M=D
+(END)
+	@END
+	0;JMP

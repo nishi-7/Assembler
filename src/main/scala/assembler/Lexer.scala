@@ -22,6 +22,7 @@ object Lexer {
     "LCL" -> Lcl,
     "ARG" -> Arg,
     "THIS" -> This,
+    "THAT" -> That,
     "R0" -> R0,
     "R0" -> R0,
     "R1" -> R1,
