@@ -61,7 +61,15 @@ class Parser(lex: Lexer) {
     val asm = curToken match {
       case Token(Symbol(_), loc) => Asm(ACmdLabel(curToken.ty), loc)
       case Token(Number(_), loc) => Asm(ACmd(curToken.ty), loc)
-      case _                     => throwSyntaxError(Symbol("_"), curToken)
+      case Token(Sp, _) | Token(Lcl, _) | Token(Arg, _) | Token(This, _) |
+          Token(That, _) | Token(R0, _) | Token(R1, _) | Token(R2, _) |
+          Token(R3, _) | Token(R4, _) | Token(R5, _) | Token(R6, _) |
+          Token(R7, _) | Token(R8, _) | Token(R9, _) | Token(R10, _) |
+          Token(R11, _) | Token(R12, _) | Token(R13, _) | Token(R14, _) |
+          Token(R15, _) | Token(Screen, _) | Token(KeyBoard, _) |
+          Token(UartRx1, _) | Token(Spi, _) | Token(LED7Seg, _) =>
+        Asm(ACmd(curToken.ty), curToken.loc)
+      case _ => throwSyntaxError(Symbol("_"), curToken)
     }
     this.nextToken()
     this.expectedAs(NewLine)

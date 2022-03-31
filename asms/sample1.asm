@@ -4,8 +4,11 @@
 @sum
 D=M
 @12
+@SP
 D=D+A
 @j
 D=D-M
 @q
 M=D
+@SP
+@R4

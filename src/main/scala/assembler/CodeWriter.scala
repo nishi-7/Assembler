@@ -1,6 +1,35 @@
 package assembler
 
 import assembler.Util._
+import assembler.CodeWriter.keywords
+
+object CodeWriter {
+  private val keywords: Map[TokenType, Int] = Map(
+    Sp -> 0,
+    Lcl -> 1,
+    Arg -> 2,
+    This -> 3,
+    That -> 4,
+    R0 -> 0,
+    R1 -> 1,
+    R2 -> 2,
+    R3 -> 3,
+    R4 -> 4,
+    R5 -> 5,
+    R6 -> 6,
+    R7 -> 7,
+    R8 -> 8,
+    R9 -> 9,
+    R10 -> 10,
+    R11 -> 11,
+    R12 -> 12,
+    R13 -> 13,
+    R14 -> 14,
+    R15 -> 15,
+    Screen -> 16384,
+    KeyBoard -> 24576
+  )
+}
 
 class CodeWriter(asms: Seq[Asm], symbolTable: Map[String, Int]) {
   def codeGen(): Seq[String] = {
@@ -36,7 +65,20 @@ class CodeWriter(asms: Seq[Asm], symbolTable: Map[String, Int]) {
               .replace(' ', '0')
         }
       }
-      case tt => throwCodeGenError("ACmd", tt.toString(), loc)
+      case tt => {
+        keywords.get(tt) match {
+          case Some(n) =>
+            String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
+          case None =>
+            throwCodeGenError(
+              "number, symbol or keywords (SP, LCL, ARG, THIS, THAT, R0-13, SCREEN, KEYBOARD, UARTRX, SPI, LED7SEG)",
+              tt.toString(),
+              loc
+            )
+        }
+
+      }
+
     }
   }
 

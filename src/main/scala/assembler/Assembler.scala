@@ -7,6 +7,7 @@ class Assembler(code: String) {
     val psr = new Parser(lex)
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
+    asms.map(println)
     val cwr = new CodeWriter(asms, table)
     cwr.codeGen()
   }

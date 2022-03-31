@@ -58,13 +58,13 @@ object Main {
                 Console.err.println(e.errorReport(code))
               case Failure(e) =>
                 Console.err.println(
-                  s"[Error] failed to assemble ${outputPath.toString()}"
+                  s"[Error] failed to assemble ${e.printStackTrace().toString()}"
                 )
             }
           }
           case Failure(exception) =>
             Console.err.println(
-              s"[Error] can not find ${outputPath.toString()}"
+              s"[Error] can not find ${exception.printStackTrace().toString()}"
             )
         }
 
