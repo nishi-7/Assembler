@@ -132,7 +132,7 @@ class Lexer(code: String) {
           val num = this.readNumber()
           Token(Number(num.toInt), Loc(line, left - num.length, num.length))
         } else {
-          Token(Illegal(c), Loc(line, left, 1))
+          Token(Ilegal(c), Loc(line, left, 1))
         }
       }
     }

@@ -6,7 +6,7 @@ sealed case class Token(var ty: TokenType, var loc: Loc)
 // TokenType
 abstract class TokenType
 // illegal character
-case class Illegal(ch: Char) extends TokenType
+case class Ilegal(ch: Char) extends TokenType
 // Eof
 case object Eof extends TokenType
 // '\n'
