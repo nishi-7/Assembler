@@ -83,6 +83,17 @@ class Lexer(code: String) {
     this.skipWithSpaces()
     ch match {
       case None => Token(Eof, Loc(line, left, 0))
+      case Some('/') => {
+        this.peekChar() match {
+          case Some('/') => {
+            while (!this.isNewLine()) {
+              this.readChar()
+            }
+            this.nextToken()
+          }
+          case _ => Token(Ilegal('/'), Loc(line, left, 1))
+        }
+      }
       case Some('\n') => {
         val tok = Token(NewLine, Loc(line, left, 1))
         this.readChar()
@@ -162,6 +173,14 @@ class Lexer(code: String) {
     nextPos += 1
   }
 
+  def peekChar(): Option[Char] = {
+    if (nextPos >= code.length) {
+      None
+    } else {
+      Some(code(nextPos))
+    }
+  }
+
   def isLetter() = {
     ch match {
       case Some(c) =>
@@ -194,4 +213,12 @@ class Lexer(code: String) {
     }
     code.slice(p, pos)
   }
+
+  def isNewLine() = {
+    ch match {
+      case Some(c) => c == '\n'
+      case _       => false
+    }
+  }
+
 }
