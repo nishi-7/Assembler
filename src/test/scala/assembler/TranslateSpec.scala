@@ -21,6 +21,36 @@ class TranslateSpec extends FlatSpec with Matchers {
     insts.next() shouldBe ("0" + "000010011010010")
   }
 
+  it should "translate @32767" in {
+    val code =
+      """@32767
+      |""".stripMargin
+
+    val lex = new Lexer(code)
+    val psr = new Parser(lex)
+    val mst = new SymbolTable(psr)
+    val (asms, table) = mst.makeSymbolTable()
+    val cwr = new CodeWriter(asms, table)
+    val insts = cwr.codeGen().iterator
+
+    insts.next() shouldBe ("0" + "111111111111111")
+  }
+
+  it should "translate @32768" in {
+    val code =
+      """@32768
+      |""".stripMargin
+
+    val lex = new Lexer(code)
+    val psr = new Parser(lex)
+    val mst = new SymbolTable(psr)
+    val (asms, table) = mst.makeSymbolTable()
+    val cwr = new CodeWriter(asms, table)
+    val insts = cwr.codeGen().iterator
+
+    insts.next() shouldBe ("0" + "111111111111111")
+  }
+
   behavior of "translate: CCmd"
   it should "translate M=0" in {
     val code =

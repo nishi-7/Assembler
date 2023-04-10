@@ -49,13 +49,22 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
     }
   }
 
+  def checkWidthOfData(inst: Int, tt: TokenType, loc: Loc) = {
+    if (inst > 32767) {
+      throwCodeGenError("Out of width", tt.toString(), loc)
+    }
+  }
+
   def binaryGenACmd(addr: TokenType, loc: Loc): String = {
     addr match {
-      case Number(n) =>
+      case Number(n) => {
+        checkWidthOfData(n, addr, loc);
         String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
+      }
       case Symbol(s) => {
         symbolTable.get(s) match {
           case None => {
+            checkWidthOfData(countAddr, addr, loc);
             val inst = String
               .format("%16s", Integer.toBinaryString(countAddr))
               .replace(' ', '0')
@@ -63,16 +72,20 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
             countAddr = countAddr + 1
             inst
           }
-          case Some(value) =>
+          case Some(value) => {
+            checkWidthOfData(value, addr, loc);
             String
               .format("%16s", Integer.toBinaryString(value))
               .replace(' ', '0')
+          }
         }
       }
       case tt => {
         keywords.get(tt) match {
-          case Some(n) =>
+          case Some(n) => {
+            checkWidthOfData(n, addr, loc);
             String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
+          }
           case None =>
             throwCodeGenError(
               "number, symbol or keywords (SP, LCL, ARG, THIS, THAT, R0-13, SCREEN, KEYBOARD, UARTRX, SPI, LED7SEG)",
