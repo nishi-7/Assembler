@@ -50,42 +50,31 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
   }
 
   def checkWidthOfData(inst: Int, tt: TokenType, loc: Loc) = {
-    if (inst > 32767) {
+    if (inst > (1 << 16) - 1) {
       throwCodeGenError("Out of width", tt.toString(), loc)
     }
   }
 
   def binaryGenACmd(addr: TokenType, loc: Loc): String = {
-    addr match {
-      case Number(n) => {
-        checkWidthOfData(n, addr, loc);
-        String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
-      }
+    // !(2 ** 16 - 1 - X)
+    // @(2 ** 16 - 1 - X)
+    // A = !A
+    val n = addr match {
+      case Number(n) => n
       case Symbol(s) => {
         symbolTable.get(s) match {
           case None => {
-            checkWidthOfData(countAddr, addr, loc);
-            val inst = String
-              .format("%16s", Integer.toBinaryString(countAddr))
-              .replace(' ', '0')
+            val n = countAddr
             this.symbolTable = symbolTable.updated(s, countAddr)
             countAddr = countAddr + 1
-            inst
+            n
           }
-          case Some(value) => {
-            checkWidthOfData(value, addr, loc);
-            String
-              .format("%16s", Integer.toBinaryString(value))
-              .replace(' ', '0')
-          }
+          case Some(value) => value
         }
       }
       case tt => {
         keywords.get(tt) match {
-          case Some(n) => {
-            checkWidthOfData(n, addr, loc);
-            String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
-          }
+          case Some(n) => n
           case None =>
             throwCodeGenError(
               "number, symbol or keywords (SP, LCL, ARG, THIS, THAT, R0-13, SCREEN, KEYBOARD, UARTRX, SPI, LED7SEG)",
@@ -93,10 +82,11 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
               loc
             )
         }
-
       }
-
     }
+
+    checkWidthOfData(n, addr, loc)
+    String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
   }
 
   def binaryGenCCmd(
