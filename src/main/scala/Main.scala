@@ -8,13 +8,14 @@ import error.HackError
 object Main {
   def main(args: Array[String]): Unit = {
     if (args.length < 0) {
-      Console.err.println("[Error] no input file")
+      Console.err.println("[*Error*] no input file")
     } else {
       for (arg <- args) {
         if (!arg.endsWith(".asm")) {
           Console.err.println(
-            "[Error] input files should be Hack VM files such as *.asm"
+            "[*Error*] input files should be Hack VM files such as *.asm"
           )
+          return
         }
         val inputPath = Paths.get(arg)
         val outputPath =
@@ -46,7 +47,7 @@ object Main {
               } catch {
                 case e: java.io.FileNotFoundException =>
                   Console.err.println(
-                    s"[Error] Can not find ${inputPath.getFileName().toString()}"
+                    s"[*Error*] Can not find ${inputPath.getFileName().toString()}"
                   )
               } finally {
                 reader.close()
@@ -63,13 +64,13 @@ object Main {
                 Console.err.println(e.errorReport(code))
               case Failure(e) =>
                 Console.err.println(
-                  s"[Error] failed to assemble ${e.printStackTrace().toString()}"
+                  s"[*Error*] failed to assemble ${e.printStackTrace().toString()}"
                 )
             }
           }
           case Failure(exception) =>
             Console.err.println(
-              s"[Error] can not find ${exception.printStackTrace().toString()}"
+              s"[*Error*] can not find ${exception.printStackTrace().toString()}"
             )
         }
 

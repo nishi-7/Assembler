@@ -19,7 +19,7 @@ class HackError(msg: String, loc: Loc) extends RuntimeException {
            |${pos}
            |${" " * 5 + s"${code.slice(lpos, rpos)}"}
            |${" " * (4 + this.loc.left - lpos) + s" ${"^" * this.loc.len}"}
-           |${s"[Error] ${msg}"}
+           |${s"[*Error*] ${msg}"}
            |""".stripMargin
   }
 }
