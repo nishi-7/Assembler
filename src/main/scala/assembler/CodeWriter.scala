@@ -49,9 +49,15 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
     }
   }
 
-  def checkWidthOfData(inst: Int, tt: TokenType, loc: Loc) = {
-    if (inst > (1 << 16) - 1) {
-      throwCodeGenError("Out of width", tt.toString(), loc)
+  def checkWidthOfData(n: Int, tt: TokenType, loc: Loc) = {
+    val upper = (1 << 15) - 1
+    if (n > upper) {
+      throwOutOfWidthError(
+        n,
+        upper,
+        tt.toString(),
+        loc
+      )
     }
   }
 
@@ -65,7 +71,7 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
         symbolTable.get(s) match {
           case None => {
             val n = countAddr
-            this.symbolTable = symbolTable.updated(s, countAddr)
+            symbolTable = symbolTable.updated(s, countAddr)
             countAddr = countAddr + 1
             n
           }

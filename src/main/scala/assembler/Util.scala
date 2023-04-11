@@ -24,4 +24,11 @@ object Util {
       loc
     )
   }
+
+  def throwOutOfWidthError(n: Int, upper: Int, symbol: String, loc: Loc) = {
+    throw new SyntaxError(
+      s"${n} is out of width ${upper}, the symbol is ${symbol}",
+      loc
+    )
+  }
 }
