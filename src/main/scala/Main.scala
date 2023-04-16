@@ -36,7 +36,8 @@ object Main {
 
             Try({
               val assembler = new Assembler(code)
-              val insts = assembler.assemble()
+              val (insts, info) = assembler.assemble()
+
               val writer =
                 Files.newBufferedWriter(outputPath, StandardCharsets.UTF_8)
               try {
@@ -53,15 +54,15 @@ object Main {
                 reader.close()
                 writer.close()
               }
-
-              println(s"Successfully generate to hack binary:")
+              println(s"{Info] Successfully generate to hack binary:")
               println(
-                s"line: ${insts.length} loc, size: ${insts.length * 2} bytes"
+                s"[Info] line: ${insts.length} loc, size: ${insts.length * 2} bytes"
               )
+              println(info.doInfoReport())
             }) match {
               case Success(value) =>
               case Failure(e: HackError) =>
-                Console.err.println(e.errorReport(code))
+                Console.err.println(e.doErrorReport(code))
               case Failure(e) =>
                 Console.err.println(
                   s"[*Error*] failed to assemble ${e.printStackTrace().toString()}"

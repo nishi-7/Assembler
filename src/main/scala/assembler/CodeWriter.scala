@@ -2,6 +2,7 @@ package assembler
 
 import assembler.Util._
 import assembler.CodeWriter.keywords
+import information.Info
 
 object CodeWriter {
   private val keywords: Map[TokenType, Int] = Map(
@@ -32,25 +33,36 @@ object CodeWriter {
 }
 
 class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
+  var info = new Info()
   private var countAddr = 16
 
-  def codeGen(): Seq[String] = {
-    asms
+  def codeGen(): (Seq[String], Info) = {
+    val code = asms
       .map(asm => translate(asm))
+    (code, info)
   }
 
   def translate(asm: Asm): String = {
     asm.ty match {
-      case ACmd(addr)             => binaryGenACmd(addr, asm.loc)
-      case ACmdLabel(label)       => binaryGenACmd(label, asm.loc)
-      case CCmd(dest, comp, jump) => binaryGenCCmd(dest, comp, jump, asm.loc)
-      case Label(label)           => throwCodeGenError("label", label, asm.loc)
-      case tt => throwCodeGenError("xx", tt.toString(), asm.loc)
+      case ACmd(addr) => {
+        info.addNumOfACmd(1)
+        binaryGenACmd(addr, asm.loc)
+      }
+      case ACmdLabel(label) => {
+        info.addNumOfACmdLabel(1)
+        binaryGenACmd(label, asm.loc)
+      }
+      case CCmd(dest, comp, jump) => {
+        info.addNumOfCCmd(1)
+        binaryGenCCmd(dest, comp, jump, asm.loc)
+      }
+      case Label(label) => throwCodeGenError("label", label, asm.loc)
+      case tt           => throwCodeGenError("xx", tt.toString(), asm.loc)
     }
   }
 
   def checkWidthOfData(n: Int, tt: TokenType, loc: Loc) = {
-    val upper = (1 << 15) - 1
+    val upper = (1 << 16) - 1
     if (n > upper) {
       throwOutOfWidthError(
         n,

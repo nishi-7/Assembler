@@ -3,6 +3,7 @@ package assembler
 import error.SyntaxError
 
 object Util {
+  /* Utility functions for errors */
   def throwTokenError(got: Token) = {
     throw new SyntaxError(s"illegal token, ${got.ty}", got.loc)
   }

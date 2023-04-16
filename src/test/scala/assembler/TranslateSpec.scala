@@ -16,7 +16,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("0" + "000010011010010")
   }
@@ -31,7 +32,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("0" + "111111111111111")
   }
@@ -46,7 +48,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("0" + "111111111111111")
   }
@@ -62,7 +65,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0101010" + "001" + "000")
   }
@@ -76,7 +80,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0111111" + "001" + "000")
   }
@@ -90,7 +95,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0111010" + "001" + "000")
   }
@@ -104,7 +110,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110000" + "001" + "000")
   }
@@ -118,7 +125,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110000" + "100" + "000")
   }
@@ -132,7 +140,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0001100" + "100" + "000")
   }
@@ -146,7 +155,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0001101" + "100" + "000")
   }
@@ -160,7 +170,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110001" + "100" + "000")
   }
@@ -175,7 +186,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110001" + "010" + "000")
   }
@@ -189,7 +201,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0001111" + "010" + "000")
   }
@@ -203,7 +216,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110011" + "010" + "000")
   }
@@ -217,7 +231,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110011" + "010" + "000")
   }
@@ -231,7 +246,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0011111" + "011" + "000")
   }
@@ -245,7 +261,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110111" + "011" + "000")
   }
@@ -259,7 +276,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110111" + "011" + "000")
   }
@@ -273,7 +291,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0001110" + "011" + "000")
   }
@@ -287,7 +306,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110010" + "110" + "000")
   }
@@ -301,7 +321,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0000010" + "110" + "000")
   }
@@ -315,7 +336,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1000010" + "110" + "000")
   }
@@ -329,7 +351,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1010011" + "101" + "000")
   }
@@ -343,7 +366,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0000111" + "101" + "000")
   }
@@ -357,7 +381,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1000111" + "101" + "000")
   }
@@ -371,7 +396,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1000000" + "111" + "000")
   }
@@ -385,7 +411,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0000000" + "111" + "000")
   }
@@ -399,7 +426,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1010101" + "111" + "000")
   }
@@ -413,7 +441,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0010101" + "111" + "000")
   }
@@ -427,7 +456,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0101010" + "000" + "001")
   }
@@ -441,7 +471,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0111111" + "000" + "001")
   }
@@ -455,7 +486,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0111010" + "000" + "001")
   }
@@ -469,7 +501,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110000" + "000" + "001")
   }
@@ -483,7 +516,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110000" + "000" + "010")
   }
@@ -497,7 +531,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0001100" + "000" + "010")
   }
@@ -511,7 +546,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0001101" + "000" + "010")
   }
@@ -525,7 +561,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110001" + "000" + "010")
   }
@@ -539,7 +576,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110001" + "000" + "011")
   }
@@ -553,7 +591,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0001111" + "000" + "011")
   }
@@ -567,7 +606,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110011" + "000" + "011")
   }
@@ -581,7 +621,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110011" + "000" + "011")
   }
@@ -595,7 +636,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0011111" + "000" + "100")
   }
@@ -609,7 +651,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110111" + "000" + "100")
   }
@@ -623,7 +666,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110111" + "000" + "100")
   }
@@ -637,7 +681,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1110010" + "000" + "101")
   }
@@ -651,7 +696,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0110010" + "000" + "101")
   }
@@ -665,7 +711,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0000010" + "000" + "101")
   }
@@ -679,7 +726,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1000010" + "000" + "101")
   }
@@ -693,7 +741,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0010011" + "000" + "110")
   }
@@ -707,7 +756,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1010011" + "000" + "110")
   }
@@ -721,7 +771,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0000111" + "000" + "110")
   }
@@ -735,7 +786,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1000111" + "000" + "110")
   }
@@ -749,7 +801,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0000000" + "000" + "111")
   }
@@ -763,7 +816,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1000000" + "000" + "111")
   }
@@ -777,7 +831,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "0010101" + "000" + "111")
   }
@@ -791,7 +846,8 @@ class TranslateSpec extends FlatSpec with Matchers {
     val mst = new SymbolTable(psr)
     val (asms, table) = mst.makeSymbolTable()
     val cwr = new CodeWriter(asms, table)
-    val insts = cwr.codeGen().iterator
+    val (x, info) = cwr.codeGen()
+    val insts = x.iterator
 
     insts.next() shouldBe ("111" + "1010101" + "000" + "111")
   }

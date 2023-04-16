@@ -3,7 +3,7 @@ package error
 import assembler.Loc
 
 class HackError(msg: String, loc: Loc) extends RuntimeException {
-  def errorReport(code: String): String = {
+  def doErrorReport(code: String): String = {
     val pos = s"line: ${this.loc.line}"
     var lpos = this.loc.left
     var rpos = this.loc.left
