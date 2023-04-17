@@ -1,22 +1,23 @@
 package assembler
 
-class SymbolTable(psr: Parser) {
-  def makeSymbolTable(): (Vector[Asm], Map[String, Int]) = {
+class SymbolTable(asms: Seq[Asm]) {
+  def makeSymbolTable(): Map[String, Int] = {
     var counter = 0
     var table: Map[String, Int] = Map.empty
-    var asms: Vector[Asm] = Vector.empty
-    while (!psr.isEnd()) {
-      val cmd = psr.parseOne()
-      cmd.ty match {
+
+    for (asm <- asms) {
+      asm.ty match {
         case Label(label) => {
           table = table.updated(label, counter)
         }
+        case DummyACmd(label) => {
+          counter += 2
+        }
         case _ => {
           counter += 1
-          asms = asms :+ cmd
         }
       }
     }
-    (asms, table)
+    table
   }
 }

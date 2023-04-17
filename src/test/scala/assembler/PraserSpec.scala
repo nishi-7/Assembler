@@ -24,7 +24,7 @@ class ParserSpec extends FlatSpec with Matchers {
   it should "parse @SP\\n" in {
     val code =
       """@SP
-              |""".stripMargin
+        |""".stripMargin
     val lex = new Lexer(code)
     val psr = new Parser(lex)
     psr.parseOne().ty shouldBe (ACmd(Sp))
@@ -42,7 +42,7 @@ class ParserSpec extends FlatSpec with Matchers {
   it should "parse M=1" in {
     val code =
       """M=1
-              |""".stripMargin
+        |""".stripMargin
     val lex = new Lexer(code)
     val psr = new Parser(lex)
     psr.parseOne().ty shouldBe (CCmd(M, Number(1), Null))

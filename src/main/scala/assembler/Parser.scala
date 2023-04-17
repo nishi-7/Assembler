@@ -6,6 +6,15 @@ class Parser(lex: Lexer) {
   private var curToken = lex.nextToken()
   private var nxtToken = lex.nextToken()
 
+  def parse(): Seq[Asm] = {
+    var asms: Seq[Asm] = Seq.empty
+    while (!isEnd()) {
+      val asm = parseOne()
+      asms = asms :+ asm
+    }
+    asms
+  }
+
   def parseOne(): Asm = {
     curToken.ty match {
       case LParen => this.parseLabel()

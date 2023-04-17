@@ -3,12 +3,14 @@ package information
 class Info {
   private var numOfACmd = 0
   private var numOfACmdLabel = 0
+  private var numOfDummyACmd = 0
   private var numOfCCmd = 0
   private var numOfLabel = 0
 
   def doInfoReport(): String = {
     s"[Info] number of ACmd      = ${numOfACmd}\n" +
       s"[Info] number of ACmdLabel = ${numOfACmdLabel}\n" +
+      s"[Info] number of DummyACmd = ${numOfDummyACmd}\n" +
       s"[Info] number of CCmd      = ${numOfCCmd}\n" +
       s"[Info] number of Label     = ${numOfLabel}"
   }
@@ -27,6 +29,14 @@ class Info {
 
   def addNumOfACmdLabel(state: Int) = {
     numOfACmdLabel += state
+  }
+
+  def setNumOfDummyACmd(state: Int) = {
+    numOfDummyACmd = state
+  }
+
+  def addNumOfDummyACmd(state: Int) = {
+    numOfDummyACmd += state
   }
 
   def setNumOfCCmd(state: Int) = {

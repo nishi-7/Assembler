@@ -5,19 +5,29 @@ import org.scalatest._
 
 class TranslateSpec extends FlatSpec with Matchers {
 
+  def translate(code: String): Iterator[String] = {
+    val a = new Assembler(code)
+    val asms0 = a.parse(code)
+    val asms1 = a.translate2DummyACmd(asms0)
+    var table = a.makeSymbolTable(asms1)
+
+    for ((key, value) <- List(("MAX.ADDR", 32768), ("NEXT.MAX.ADDR", 32769))) {
+      table = table.updated(key, value)
+    }
+
+    val asms2 = a.resolveDummyACmd(16, asms1, table)
+    val asms3 = a.removeLabel(asms2)
+    val (insts, info) = a.codeGen(asms3, table)
+    insts.iterator
+  }
+
   behavior of "translate: ACmd"
   it should "translate @1234" in {
     val code =
       """@1234
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("0" + "000010011010010")
   }
@@ -27,31 +37,31 @@ class TranslateSpec extends FlatSpec with Matchers {
       """@32767
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("0" + "111111111111111")
   }
 
   it should "translate @32768" in {
     val code =
-      """@32768
+      """@MAX.ADDR
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("0" + "111111111111111")
+    insts.next() shouldBe ("111" + "0110001" + "100" + "000")
+  }
+
+  it should "translate @32769" in {
+    val code =
+      """@NEXT.MAX.ADDR
+      |""".stripMargin
+
+    val insts = translate(code)
+
+    insts.next() shouldBe ("0" + "111111111111110")
+    insts.next() shouldBe ("111" + "0110001" + "100" + "000")
   }
 
   behavior of "translate: CCmd"
@@ -60,13 +70,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M=0
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0101010" + "001" + "000")
   }
@@ -75,13 +79,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M=1
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0111111" + "001" + "000")
   }
@@ -90,13 +88,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M=-1
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0111010" + "001" + "000")
   }
@@ -105,13 +97,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M=A
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110000" + "001" + "000")
   }
@@ -120,13 +106,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A=M
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110000" + "100" + "000")
   }
@@ -135,13 +115,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A=D
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0001100" + "100" + "000")
   }
@@ -150,13 +124,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A=!D
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0001101" + "100" + "000")
   }
@@ -165,13 +133,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A=!M
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110001" + "100" + "000")
   }
@@ -181,13 +143,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D=!A
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110001" + "010" + "000")
   }
@@ -196,13 +152,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D=-D
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0001111" + "010" + "000")
   }
@@ -211,13 +161,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D=-A
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110011" + "010" + "000")
   }
@@ -226,13 +170,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D=-M
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110011" + "010" + "000")
   }
@@ -241,13 +179,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """MD=D+1
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0011111" + "011" + "000")
   }
@@ -256,13 +188,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """MD=A+1
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110111" + "011" + "000")
   }
@@ -271,13 +197,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """MD=M+1
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110111" + "011" + "000")
   }
@@ -286,13 +206,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """MD=D-1
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0001110" + "011" + "000")
   }
@@ -301,13 +215,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AD=M-1
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110010" + "110" + "000")
   }
@@ -316,13 +224,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AD=D+A
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0000010" + "110" + "000")
   }
@@ -331,13 +233,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AD=D+M
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1000010" + "110" + "000")
   }
@@ -346,13 +242,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AM=D-M
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1010011" + "101" + "000")
   }
@@ -361,13 +251,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AM=A-D
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0000111" + "101" + "000")
   }
@@ -376,13 +260,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AM=M-D
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1000111" + "101" + "000")
   }
@@ -391,13 +269,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AMD=D&M
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1000000" + "111" + "000")
   }
@@ -406,13 +278,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AMD=D&A
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0000000" + "111" + "000")
   }
@@ -421,13 +287,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AMD=D|M
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1010101" + "111" + "000")
   }
@@ -436,13 +296,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """AMD=D|A
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0010101" + "111" + "000")
   }
@@ -451,13 +305,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """0;JGT
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0101010" + "000" + "001")
   }
@@ -466,13 +314,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """1;JGT
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0111111" + "000" + "001")
   }
@@ -481,13 +323,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """-1;JGT
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0111010" + "000" + "001")
   }
@@ -496,13 +332,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A;JGT
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110000" + "000" + "001")
   }
@@ -511,13 +341,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M;JEQ
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110000" + "000" + "010")
   }
@@ -526,13 +350,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D;JEQ
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0001100" + "000" + "010")
   }
@@ -541,13 +359,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """!D;JEQ
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0001101" + "000" + "010")
   }
@@ -556,13 +368,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """!A;JEQ
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110001" + "000" + "010")
   }
@@ -571,13 +377,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """!M;JGE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110001" + "000" + "011")
   }
@@ -586,13 +386,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """-D;JGE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0001111" + "000" + "011")
   }
@@ -601,13 +395,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """-M;JGE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110011" + "000" + "011")
   }
@@ -616,13 +404,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """-A;JGE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110011" + "000" + "011")
   }
@@ -631,13 +413,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D+1;JLT
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0011111" + "000" + "100")
   }
@@ -646,13 +422,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M+1;JLT
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110111" + "000" + "100")
   }
@@ -661,13 +431,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A+1;JLT
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110111" + "000" + "100")
   }
@@ -676,13 +440,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M-1;JNE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1110010" + "000" + "101")
   }
@@ -691,13 +449,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A-1;JNE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0110010" + "000" + "101")
   }
@@ -706,13 +458,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D+A;JNE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0000010" + "000" + "101")
   }
@@ -721,13 +467,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D+M;JNE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1000010" + "000" + "101")
   }
@@ -736,13 +476,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D-A;JLE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0010011" + "000" + "110")
   }
@@ -751,13 +485,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D-M;JLE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1010011" + "000" + "110")
   }
@@ -766,13 +494,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """A-D;JLE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0000111" + "000" + "110")
   }
@@ -781,13 +503,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """M-D;JLE
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1000111" + "000" + "110")
   }
@@ -796,13 +512,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D&A;JMP
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0000000" + "000" + "111")
   }
@@ -811,13 +521,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D&M;JMP
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1000000" + "000" + "111")
   }
@@ -826,13 +530,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D|A;JMP
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "0010101" + "000" + "111")
   }
@@ -841,13 +539,7 @@ class TranslateSpec extends FlatSpec with Matchers {
       """D|M;JMP
       |""".stripMargin
 
-    val lex = new Lexer(code)
-    val psr = new Parser(lex)
-    val mst = new SymbolTable(psr)
-    val (asms, table) = mst.makeSymbolTable()
-    val cwr = new CodeWriter(asms, table)
-    val (x, info) = cwr.codeGen()
-    val insts = x.iterator
+    val insts = translate(code)
 
     insts.next() shouldBe ("111" + "1010101" + "000" + "111")
   }

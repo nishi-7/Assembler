@@ -32,4 +32,16 @@ object Util {
       loc
     )
   }
+
+  def checkWidthOfData(width: Int, n: Int, tt: TokenType, loc: Loc) = {
+    val upper = (1 << width) - 1
+    if (n > upper) {
+      throwOutOfWidthError(
+        n,
+        upper,
+        tt.toString(),
+        loc
+      )
+    }
+  }
 }

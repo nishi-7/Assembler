@@ -61,22 +61,8 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
     }
   }
 
-  def checkWidthOfData(n: Int, tt: TokenType, loc: Loc) = {
-    val upper = (1 << 16) - 1
-    if (n > upper) {
-      throwOutOfWidthError(
-        n,
-        upper,
-        tt.toString(),
-        loc
-      )
-    }
-  }
-
   def binaryGenACmd(addr: TokenType, loc: Loc): String = {
-    // !(2 ** 16 - 1 - X)
-    // @(2 ** 16 - 1 - X)
-    // A = !A
+
     val n = addr match {
       case Number(n) => n
       case Symbol(s) => {
@@ -103,7 +89,7 @@ class CodeWriter(asms: Seq[Asm], var symbolTable: Map[String, Int]) {
       }
     }
 
-    checkWidthOfData(n, addr, loc)
+    checkWidthOfData(15, n, addr, loc)
     String.format("%16s", Integer.toBinaryString(n)).replace(' ', '0')
   }
 
