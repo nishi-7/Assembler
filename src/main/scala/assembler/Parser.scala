@@ -10,9 +10,10 @@ class Parser(lex: Lexer) {
     var asms: Seq[Asm] = Seq.empty
     while (!isEnd()) {
       val asm = parseOne()
-      asms = asms :+ asm
+      asms = asm +: asms
     }
-    asms
+
+    asms.reverse
   }
 
   def parseOne(): Asm = {

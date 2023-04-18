@@ -1,6 +1,7 @@
 package assembler
 
 import information.Info
+import assembler.Util._
 
 class Assembler(code: String) {
 
@@ -56,6 +57,8 @@ class Assembler(code: String) {
             case Some(value) => {
               // value > 1**15 - 1
               if (value > (1 << (width - 1)) - 1) {
+                checkWidthOfData(16, value, Symbol(s), loc)
+
                 // @(2 ** 16 - 1 - X)
                 // A = !A
                 val addr = (1 << width) - 1 - value
@@ -63,7 +66,7 @@ class Assembler(code: String) {
                 ret = Asm(CCmd(A, BangA, Null), loc) +: ret
               } else {
                 ret = Asm(ACmd(Number(value)), loc) +: ret
-                ret = Asm(CCmd(A, BangA, Null), loc) +: ret
+                ret = Asm(CCmd(A, A, Null), loc) +: ret
               }
             }
 

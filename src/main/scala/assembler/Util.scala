@@ -1,6 +1,7 @@
 package assembler
 
 import error.SyntaxError
+import error.OutofWidthError
 
 object Util {
   /* Utility functions for errors */
@@ -27,7 +28,7 @@ object Util {
   }
 
   def throwOutOfWidthError(n: Int, upper: Int, symbol: String, loc: Loc) = {
-    throw new SyntaxError(
+    throw new OutofWidthError(
       s"${n} is out of width ${upper}, the symbol is ${symbol}",
       loc
     )

@@ -10,8 +10,15 @@ class TranslateSpec extends FlatSpec with Matchers {
     val asms0 = a.parse(code)
     val asms1 = a.translate2DummyACmd(asms0)
     var table = a.makeSymbolTable(asms1)
+    val predefinedSymbols =
+      List(
+        ("MAX.16SignedADDR", (1 << 15) - 1),
+        ("NEXT.MAX.16SignedADDR", 1 << 15),
+        ("MAX.16UnSignedADDR", (1 << 16) - 1),
+        ("NEXT.MAX.16UnSignedADDR", 1 << 16)
+      )
 
-    for ((key, value) <- List(("MAX.ADDR", 32768), ("NEXT.MAX.ADDR", 32769))) {
+    for ((key, value) <- predefinedSymbols) {
       table = table.updated(key, value)
     }
 
@@ -19,6 +26,50 @@ class TranslateSpec extends FlatSpec with Matchers {
     val asms3 = a.removeLabel(asms2)
     val (insts, info) = a.codeGen(asms3, table)
     insts.iterator
+  }
+  behavior of "translate: large address to two instructions"
+  it should "translate (1<<15) - 1" in {
+    val code =
+      """@MAX.16SignedADDR
+      |""".stripMargin
+
+    val insts = translate(code)
+
+    insts.next() shouldBe ("0" + "111111111111111")
+    insts.next() shouldBe ("111" + "0110000" + "100" + "000")
+  }
+
+  it should "translate 1<<15" in {
+    val code =
+      """@NEXT.MAX.16SignedADDR
+      |""".stripMargin
+
+    val insts = translate(code)
+
+    insts.next() shouldBe ("0" + "111111111111111")
+    insts.next() shouldBe ("111" + "0110001" + "100" + "000")
+  }
+
+  it should "translate (1<<16) - 1" in {
+    val code =
+      """@MAX.16UnSignedADDR
+      |""".stripMargin
+
+    val insts = translate(code)
+
+    insts.next() shouldBe ("0" + "000000000000000")
+    insts.next() shouldBe ("111" + "0110001" + "100" + "000")
+  }
+
+  it should "translate 1<<16" in {
+    val code =
+      """@NEXT.MAX.16UnSignedADDR
+      |""".stripMargin
+
+    assertThrows[error.OutofWidthError] {
+      translate(code)
+
+    }
   }
 
   behavior of "translate: ACmd"
@@ -40,28 +91,6 @@ class TranslateSpec extends FlatSpec with Matchers {
     val insts = translate(code)
 
     insts.next() shouldBe ("0" + "111111111111111")
-  }
-
-  it should "translate @32768" in {
-    val code =
-      """@MAX.ADDR
-      |""".stripMargin
-
-    val insts = translate(code)
-
-    insts.next() shouldBe ("0" + "111111111111111")
-    insts.next() shouldBe ("111" + "0110001" + "100" + "000")
-  }
-
-  it should "translate @32769" in {
-    val code =
-      """@NEXT.MAX.ADDR
-      |""".stripMargin
-
-    val insts = translate(code)
-
-    insts.next() shouldBe ("0" + "111111111111110")
-    insts.next() shouldBe ("111" + "0110001" + "100" + "000")
   }
 
   behavior of "translate: CCmd"
