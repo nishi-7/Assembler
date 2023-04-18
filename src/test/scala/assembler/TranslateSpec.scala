@@ -27,6 +27,7 @@ class TranslateSpec extends FlatSpec with Matchers {
     val (insts, info) = a.codeGen(asms3, table)
     insts.iterator
   }
+
   behavior of "translate: large address to two instructions"
   it should "translate (1<<15) - 1" in {
     val code =

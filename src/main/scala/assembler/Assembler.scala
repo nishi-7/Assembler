@@ -72,6 +72,7 @@ class Assembler(code: String) {
 
             case None => {
               ret = Asm(ACmdLabel(Symbol(s)), loc) +: ret
+              ret = Asm(CCmd(A, A, Null), loc) +: ret
             }
           }
         }
